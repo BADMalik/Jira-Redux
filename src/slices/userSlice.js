@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-const initialState = {};
+const initialState = [];
 const userSlice = createSlice({
   name: "users",
   initialState,
@@ -8,7 +8,11 @@ const userSlice = createSlice({
       state.push(action.payload);
     },
     deleteUser(state, action) {
-      state.splice(action.payload.id, 1);
+      console.log(action);
+      // return {
+      //   ...state,
+      //   users: state.users.filter((user) => user.id !== action.payload.id),
+      // };
     },
   },
 });

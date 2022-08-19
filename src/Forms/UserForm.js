@@ -1,8 +1,20 @@
 import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addUser } from "../slices/userSlice";
+import uuid from "react-uuid";
 
 const UserForm = () => {
+  let state = useSelector((state) => state.users);
+  let dispatch = useDispatch();
   const handleSubmit = (event) => {
-    console.log(event);
+    event.preventDefault();
+    let { username } = event.target.elements;
+    dispatch(
+      addUser({
+        id: uuid(),
+        name: username.value,
+      })
+    );
   };
   return (
     <div>
@@ -12,7 +24,7 @@ const UserForm = () => {
           <input type="text" id="username"></input>
         </div>
         <div>
-          <button type="button">Enter User</button>
+          <button type="submit">Enter User</button>
         </div>
       </form>
     </div>
