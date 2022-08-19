@@ -1,5 +1,8 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import store from "./stores/taskStore.js";
+import TaskList from "./slices/taskList";
+
+import "./App.css";
 
 function App() {
   return (
@@ -9,6 +12,7 @@ function App() {
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
+        <TaskList></TaskList>
         <a
           className="App-link"
           href="https://reactjs.org"
