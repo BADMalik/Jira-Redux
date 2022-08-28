@@ -70,13 +70,11 @@ const ProjectList = () => {
             {errors.projectName && <span>This field is required</span>}
           </div>
           {projectState.states.map((value, index) => {
-            let identifier = "name" + index;
             return (
               <div key={index}>
                 <div>
                   <input
                     value={projectState.states[index].name || ""}
-                    // {...register(identifier, { required: true })}
                     onChange={(e) => {
                       setProjectState((prevState) => ({
                         ...prevState,
