@@ -16,7 +16,7 @@ const ProjectList = () => {
     name: "",
     states: [{ id: 0, name: "", tasks: [] }],
   });
-  console.log(userDetails, projects, projectState.states.length);
+  // console.log(userDetails, projects, projectState.states.length);
   const {
     register,
     handleSubmit,
@@ -57,38 +57,39 @@ const ProjectList = () => {
             />
             {errors.projectName && <span>This field is required</span>}
           </div>
-          {/* {projectState.states.map((value, index) => {
+          {projectState.states.map((value, index) => {
             console.log(index, value, value.name);
             let identifier = "name" + index;
-            // return (
-            //   <div key={index}>
-            //     <div>
-            //       <input
-            //         value={projectState.states[index].name || ""}
-            //         {...register(identifier, { required: true })}
-            //         onChange={(e) => {
-            //           console.log(e.target.value);
-            //           setProjectState(
-            //             [...[projectState.states]].map((value) => {
-            //               if (index === value.id) {
-            //                 return {
-            //                   ...value,
-            //                   name: e.target.value,
-            //                 };
-            //               } else {
-            //                 return value;
-            //               }
-            //             })
-            //           );
-            //         }}
-            //       />
-            //       <div>
-            //         {errors.name && <span>This field is required</span>}
-            //       </div>
-            //     </div>
-            //   </div>
-            // );
-          })} */}
+            return (
+              <div key={index}>
+                <div>
+                  <input
+                    // value={projectState.states[index].name || ""}
+                    // {...register(identifier, { required: true })}
+                    onChange={(e) => {
+                      setProjectState((prevState) => ({
+                        ...prevState,
+                        states: [...prevState.states].map((value, i) => {
+                          console.log(value, i);
+                          if (index === value.id) {
+                            return {
+                              ...value,
+                              name: e.target.value,
+                            };
+                          } else {
+                            return value;
+                          }
+                        }),
+                      }));
+                    }}
+                  />
+                  <div>
+                    {errors.name && <span>This field is required</span>}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
           <button
             onClick={() => {
               setProjectState((state) => ({
