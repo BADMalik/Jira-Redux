@@ -5,7 +5,6 @@ import uuid from "react-uuid";
 
 const UserForm = () => {
   let state = useSelector((state) => state.users);
-  // console.log(state);
   let dispatch = useDispatch();
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -13,8 +12,6 @@ const UserForm = () => {
       id: uuid(),
       name: event.target.username.value,
     };
-    // let { username } = event.target.elements;
-    // console.log(data);
     dispatch(addUser(data));
   };
   return (

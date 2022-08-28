@@ -9,6 +9,7 @@ import Dummy from "./lists/Dummy";
 import ProjectList from "./lists/ProjectList";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
+import Project from "../src/page/Project";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 // let persistor = persistStore(TaskStore);
 // console.log(store);
@@ -23,6 +24,10 @@ root.render(
             </Route>
             <Route path="user" element={<Dummy />}></Route>
             <Route path="user/:userid" element={<ProjectList />}></Route>
+            <Route
+              path="user/:userid/project/:projectid"
+              element={<Project />}
+            ></Route>
           </Routes>
         </BrowserRouter>
       </PersistGate>
