@@ -9,26 +9,34 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-
 import storage from "redux-persist/lib/storage";
-import { PersistGate } from "redux-persist/integration/react";
-
 import taskReducer from "../slices/task";
-import userReducer from "../slices/userSlice";
+import ProjectReducer from "../slices/projectSlice";
+import { UserReducer } from "../slices/userSlice";
+import thunk from "redux-thunk";
+import { combineReducers } from "@reduxjs/toolkit";
 
 const persistConfig = {
   key: "root",
-  version: 1,
   storage,
 };
-let allReducers = { tasks: taskReducer, users: userReducer };
-const persistedReducer = persistReducer(persistConfig, allReducers);
-export default configureStore({
-  reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
-    }),
+const rootReducer = combineReducers({
+  users: UserReducer,
+  tasks: taskReducer,
+  projects: ProjectReducer,
 });
+// let allReducers = { tasks: taskReducer, users: userReducer };
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+// export default () => {
+export const store = configureStore({
+  reducer: persistedReducer,
+  middleware: [thunk],
+
+  // middleware: (getDefaultMiddleware) =>
+  //   getDefaultMiddleware({
+  //     serializableCheck: {
+  //       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+  //     },
+  //   }),
+});
+export const persistor = persistStore(store);

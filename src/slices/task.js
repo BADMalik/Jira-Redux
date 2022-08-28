@@ -22,7 +22,7 @@ const taskSlice = createSlice({
   initialState,
   reducers: {
     deleteTask(state, action) {
-      console.log(state, action);
+      // console.log(state, action);
       state.splice(action.payload.id - 1, 1);
     },
     addTask(state, action) {

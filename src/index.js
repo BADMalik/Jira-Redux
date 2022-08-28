@@ -4,17 +4,17 @@ import "./index.css";
 import App from "./App";
 import { Provider } from "react-redux";
 import reportWebVitals from "./reportWebVitals";
-import TaskStore from "./stores/taskStore";
+import { persistor, store } from "./stores/taskStore";
 import Dummy from "./lists/Dummy";
 import ProjectList from "./lists/ProjectList";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { PersistGate } from "redux-persist/integration/react";
-import { persistStore } from "redux-persist";
 const root = ReactDOM.createRoot(document.getElementById("root"));
-let persistor = persistStore(TaskStore);
+// let persistor = persistStore(TaskStore);
+// console.log(store);
 root.render(
   <React.StrictMode>
-    <Provider store={TaskStore}>
+    <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <Routes>
