@@ -1,7 +1,8 @@
-import { React, useState } from "react";
+import { React, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
-const TaskForm = ({ userId, users }) => {
+const TaskForm = ({ userId, users, states, addTask }) => {
   const [assignee, setAssignee] = useState();
+
   const {
     register,
     handleSubmit,
@@ -9,31 +10,48 @@ const TaskForm = ({ userId, users }) => {
     watch,
     formState: { errors },
   } = useForm();
-  const onSubmit = (data) => {
-    console.log(data);
-  };
   return (
     <div>
-      <form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(addTask)}>
         <input
           placeholder="Enter task name"
           {...register("name", { required: true })}
         />
-        <input type="hidden" name="assignedBy" value={userId}></input>
+        <input
+          {...register("assignedBy", { required: true })}
+          type="hidden"
+          name="assignedBy"
+          id="assignedBy"
+          value={userId}
+        ></input>
 
         <div>
-          <select>
-            <option disabled selected></option>
+          <select name="assignee" {...register("assignedTo")}>
+            <option disabled></option>
             {users.map((user, index) => {
               return (
-                <option key={index} value={user.userId}>
+                <option key={index} value={user.id}>
                   {user.name}
                 </option>
               );
             })}
           </select>
         </div>
-        {errors.exampleRequired && <span>This field is required</span>}
+        {errors.assignedTo && <span>This field is required</span>}
+
+        <div>
+          <select name="state" {...register("state", { required: true })}>
+            <option disabled></option>
+            {states.map((states, index) => {
+              return (
+                <option key={index} value={parseInt(states.id)}>
+                  {states.name}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        {errors.state && <span>This field is required</span>}
 
         <input type="submit" />
       </form>
