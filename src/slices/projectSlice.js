@@ -10,6 +10,7 @@ const projectSlice = createSlice({
       state.projects.push(action.payload);
     },
     updateProject(state, action) {
+      // console.log(action.payload, state.projects.projects, "asdasdw");
       return {
         ...state,
         projects: [...state.projects].map((project, index) => {
