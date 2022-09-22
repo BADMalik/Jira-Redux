@@ -13,25 +13,25 @@ import Project from "../src/page/Project";
 import "bootstrap/dist/css/bootstrap.min.css";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<App />}>
-              <Route path="nesteduser" element={<Dummy />}></Route>
-            </Route>
-            <Route path="user" element={<Dummy />}></Route>
-            <Route path="user/:userid" element={<ProjectList />}></Route>
-            <Route
-              path="user/:userid/project/:projectid"
-              element={<Project />}
-            ></Route>
-          </Routes>
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />}>
+            <Route path="nesteduser" element={<Dummy />}></Route>
+          </Route>
+          <Route path="user" element={<Dummy />}></Route>
+          <Route path="user/:userid" element={<ProjectList />}></Route>
+          <Route
+            path="user/:userid/project/:projectid"
+            element={<Project />}
+          ></Route>
+        </Routes>
+      </BrowserRouter>
+    </PersistGate>
+  </Provider>
+  // </React.StrictMode>
 );
 
 reportWebVitals();

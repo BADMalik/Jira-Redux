@@ -1,13 +1,9 @@
-import { React, useState, useRef } from "react";
+import { React } from "react";
 import { useForm } from "react-hook-form";
 const TaskForm = ({ userId, users, states, addTask }) => {
-  const [assignee, setAssignee] = useState();
-
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
     formState: { errors },
   } = useForm();
   return (
