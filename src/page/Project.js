@@ -15,8 +15,14 @@ const Project = () => {
       (project) => project.name === projectid && project.userId === userid
     )
   );
+  const reduxState = useSelector((state) => {
+    return state;
+  });
+  // console.log(reduxState, "REDUX");
+  // console.log(projectDetails, "intial value project detials");
 
   const [project, setProjectState] = useState(projectDetails);
+  const [redux, setRedux] = useState(reduxState);
   const allUsers = useSelector((state) =>
     state.users.filter((user, i) => user.id !== userid)
   );
@@ -25,13 +31,6 @@ const Project = () => {
     let data;
     // let count = 0;
     task.id = getRandomInt(100000000);
-    // for (let i = 0; i < projectDetails.states.length; i++) {
-    //   count = count + projectDetails.states[i].tasks.length;
-    // }
-    // count += 1;
-    // task.id = count;
-    // console.log(task);
-    // return 0;
     setProjectState((prevState) => {
       data = {
         ...prevState,
@@ -48,108 +47,69 @@ const Project = () => {
       };
       return data;
     });
-    // console.log(data);
     dispatch(updateProject(data));
+    setRedux(data);
   };
 
   const onDragEnd = useCallback((result) => {
-    let newSourceProjectobject = projectDetails;
+    let exit = false;
+    let newSourceProjectobject = { ...projectDetails };
+    // console.log(redux, "REDUX on drag");
     let replace;
     const { destination, source } = result;
-    console.log(result);
-    let finalProjectCopy;
-    // if (destination.index === 0 && )
-    if (source.index === destination?.index) {
+    console.log(result, "Draggable result");
+    if (source?.index === destination?.index) {
       return;
     }
+    console.log(source, destination, "coordinates");
     let nullIndex;
+    //find the source task
     for (let i = 0; i < newSourceProjectobject.states.length; i++) {
       for (let j = 0; j < newSourceProjectobject.states[i].tasks.length; j++) {
-        console.log(
-          "newSourceProjectobject.states[i]",
-          newSourceProjectobject.states[i]
-        );
         if (source.index === newSourceProjectobject.states[i].tasks[j].id) {
           nullIndex = i;
-          replace = JSON.parse(
-            JSON.stringify(newSourceProjectobject.states[i].tasks.splice(j, 1))
-          );
+          replace = { ...newSourceProjectobject };
+          console.log(replace, newSourceProjectobject, "found");
+          replace = replace?.states[i]?.tasks.splice(j, 1)[0];
+          break;
         }
       }
     }
-
-    for (let i = 0; i < newSourceProjectobject.states.length; i++) {
-      if (
-        newSourceProjectobject.states[i].tasks.length === 0 &&
-        nullIndex === i
-      ) {
-        continue;
-      }
-      if (
-        newSourceProjectobject.states[i].tasks.length === 0 &&
-        nullIndex !== i
-      ) {
-        if (destination.index === 0) {
-          let newTaskList = [];
-          let latestReplacement = {
-            ...replace[0],
-            state: newSourceProjectobject.states[i].id.toString(),
-          };
-          newTaskList.push(latestReplacement);
-          finalProjectCopy = JSON.parse(JSON.stringify(newSourceProjectobject));
-          finalProjectCopy.states[i].tasks = newTaskList;
+    if (nullIndex !== undefined) {
+      for (let i = 0; i < newSourceProjectobject.states.length; i++) {
+        if (exit) {
           break;
         }
-      } else {
         for (
           let j = 0;
           j < newSourceProjectobject.states[i].tasks.length;
           j++
         ) {
+          //best case that if the destination is found
           if (
             destination.index === newSourceProjectobject.states[i].tasks[j].id
           ) {
-            let newTaskList = JSON.parse(
-              JSON.stringify(newSourceProjectobject.states[i].tasks)
-            );
-
-            let latestReplacement = {
-              ...replace[0],
-              state: newSourceProjectobject.states[i].tasks[j].state,
-            };
-            newTaskList.splice(j, 0, latestReplacement);
-            finalProjectCopy = JSON.parse(
-              JSON.stringify(newSourceProjectobject)
-            );
-            finalProjectCopy.states[i].tasks = newTaskList;
+            newSourceProjectobject.states[i].tasks.push(replace);
+            exit = true;
+            break;
           }
-          if (
-            destination.index ===
-            newSourceProjectobject.states[i].tasks[j].id + 1
-          ) {
-            let newTaskList = JSON.parse(
-              JSON.stringify(newSourceProjectobject.states[i].tasks)
-            );
-            let latestReplacement = {
-              ...replace[0],
-              state: newSourceProjectobject.states[i].tasks[j].state,
-            };
-            newTaskList.splice(j + 1, 0, latestReplacement);
-            finalProjectCopy = JSON.parse(
-              JSON.stringify(newSourceProjectobject)
-            );
-            finalProjectCopy.states[i].tasks = newTaskList;
+          //use case that the destination is empty so it's index will be 0
+          else if (destination.index === 0 && destination.droppableId) {
+            newSourceProjectobject.states[
+              parseInt(destination.droppableId)
+            ].tasks.push(replace);
+            exit = true;
+            break;
+            // console.log(replace);
           }
         }
       }
     }
-    console.log(finalProjectCopy, "FPCCCCCCCCCCCCC");
-
-    // console.log(finalProjectCopy, "|||||||");
-    dispatch(updateProject(finalProjectCopy));
-    // setProjectState(finalProjectCopy);
+    console.log(newSourceProjectobject.states, "FPCCCCCCCCCCCCC");
+    // dispatch(updateProject(newSourceProjectobject));
+    // setRedux(finalProjectCopy);
+    // console.table(newSourceProjectobject, "Final Source Project Version");
   }, []);
-  // console.log("updated proejct state", project);
   return (
     <div style={{ textAlign: "center" }}>
       Project : {projectDetails.name} by User <b>{projectDetails.userId}</b>
