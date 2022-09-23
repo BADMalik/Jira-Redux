@@ -69,8 +69,21 @@ const Project = () => {
         if (source.index === newSourceProjectobject.states[i].tasks[j].id) {
           nullIndex = i;
           replace = { ...newSourceProjectobject };
-          console.log(replace, newSourceProjectobject, "found");
-          replace = replace?.states[i]?.tasks.splice(j, 1)[0];
+          console.log(
+            replace,
+            newSourceProjectobject.states[i].tasks,
+            j,
+            "found"
+          );
+          if (newSourceProjectobject.states[i].tasks.length === 1) {
+            console.log(replace?.states[i]?.tasks);
+            replace = replace?.states[i]?.tasks.shift();
+          } else {
+            replace = { ...replace };
+            let tempObj = { ...replace };
+            //if there are multiple elements in the source
+            replace = tempObj?.states[i]?.tasks.splice(j, 1)[0];
+          }
           break;
         }
       }
@@ -105,8 +118,8 @@ const Project = () => {
         }
       }
     }
-    console.log(newSourceProjectobject.states, "FPCCCCCCCCCCCCC");
-    // dispatch(updateProject(newSourceProjectobject));
+    // console.log(newSourceProjectobject.states, "FPCCCCCCCCCCCCC");
+    dispatch(updateProject(newSourceProjectobject));
     // setRedux(finalProjectCopy);
     // console.table(newSourceProjectobject, "Final Source Project Version");
   }, []);
