@@ -17,6 +17,7 @@ const projectSlice = createSlice({
         return {
           ...state,
           projects: [...state.projects].map((project, index) => {
+            // console.log(project, "a");
             if (project.name === action.payload.name) {
               return action.payload;
             } else {

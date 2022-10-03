@@ -7,19 +7,20 @@ import { updateProject } from "../slices/projectSlice";
 const Project = () => {
   const { userid, projectid } = useParams();
   const dispatch = useDispatch();
+
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
+
   const projectDetails = useSelector((state) =>
     state.projects.projects.find(
       (project) => project.name === projectid && project.userId === userid
     )
   );
+
   const reduxState = useSelector((state) => {
     return state;
   });
-  // console.log(reduxState, "REDUX");
-  // console.log(projectDetails, "intial value project detials");
 
   const [project, setProjectState] = useState(projectDetails);
   const [redux, setRedux] = useState(reduxState);
@@ -51,83 +52,83 @@ const Project = () => {
     setRedux(data);
   };
 
-  const onDragEnd = useCallback((result) => {
-    let exit = false;
-    let newSourceProjectobject = { ...projectDetails };
-    // console.log(redux, "REDUX on drag");
-    let replace;
-    const { destination, source } = result;
-    console.log(result, "Draggable result");
-    if (source?.index === destination?.index) {
-      return;
-    }
-    console.log(source, destination, "coordinates");
-    let nullIndex;
-    //find the source task
-    for (let i = 0; i < newSourceProjectobject.states.length; i++) {
-      for (let j = 0; j < newSourceProjectobject.states[i].tasks.length; j++) {
-        if (source.index === newSourceProjectobject.states[i].tasks[j].id) {
-          nullIndex = i;
-          replace = { ...newSourceProjectobject };
-          console.log(
-            replace,
-            newSourceProjectobject.states[i].tasks,
-            j,
-            "found"
-          );
-          if (newSourceProjectobject.states[i].tasks.length === 1) {
-            console.log(replace?.states[i]?.tasks);
-            replace = replace?.states[i]?.tasks.shift();
-          } else {
-            replace = { ...replace };
-            let tempObj = { ...replace };
-            //if there are multiple elements in the source
-            replace = tempObj?.states[i]?.tasks.splice(j, 1)[0];
-          }
-          break;
-        }
+  const onDragEnd = useCallback(
+    (result) => {
+      let exit = false;
+      let newSourceProjectobject = JSON.parse(JSON.stringify(projectDetails));
+      // console.log(redux, "REDUX on drag");
+      let replace;
+      const { destination, source } = result;
+      // console.log(result, "Draggable result");
+      if (source?.index === destination?.index) {
+        return;
       }
-    }
-    if (nullIndex !== undefined) {
+      // console.log(source, destination, "coordinates");
+      let nullIndex;
+      //find the source task
       for (let i = 0; i < newSourceProjectobject.states.length; i++) {
-        if (exit) {
-          break;
-        }
         for (
           let j = 0;
           j < newSourceProjectobject.states[i].tasks.length;
           j++
         ) {
-          //best case that if the destination is found
-          if (
-            destination.index === newSourceProjectobject.states[i].tasks[j].id
-          ) {
-            newSourceProjectobject.states[i].tasks.push(replace);
-            exit = true;
+          if (source.index === newSourceProjectobject.states[i].tasks[j].id) {
+            nullIndex = i;
+            replace = { ...newSourceProjectobject };
+            if (newSourceProjectobject.states[i].tasks.length === 1) {
+              console.log(replace?.states[i]?.tasks, "Last Element Bitch");
+              replace = replace?.states[i]?.tasks.shift();
+            } else {
+              //if there are multiple elements in the source
+              replace = replace?.states[i]?.tasks.splice(j, 1)[0];
+            }
             break;
-          }
-          //use case that the destination is empty so it's index will be 0
-          else if (destination.index === 0 && destination.droppableId) {
-            newSourceProjectobject.states[
-              parseInt(destination.droppableId)
-            ].tasks.push(replace);
-            exit = true;
-            break;
-            // console.log(replace);
           }
         }
       }
-    }
-    // console.log(newSourceProjectobject.states, "FPCCCCCCCCCCCCC");
-    dispatch(updateProject(newSourceProjectobject));
-    // setRedux(finalProjectCopy);
-    // console.table(newSourceProjectobject, "Final Source Project Version");
-  }, []);
+      if (nullIndex !== undefined) {
+        for (let i = 0; i < newSourceProjectobject.states.length; i++) {
+          if (exit) {
+            break;
+          }
+          for (
+            let j = 0;
+            j < newSourceProjectobject.states[i].tasks.length;
+            j++
+          ) {
+            //best case that if the destination is found
+            if (
+              destination.index === newSourceProjectobject.states[i].tasks[j].id
+            ) {
+              newSourceProjectobject.states[i].tasks.push(replace);
+              exit = true;
+              break;
+            }
+            //use case that the destination is empty so it's index will be 0
+            else if (destination.index === 0 && destination.droppableId) {
+              newSourceProjectobject.states[
+                parseInt(destination.droppableId)
+              ].tasks.push(replace);
+              exit = true;
+              break;
+              // console.log(replace);
+            }
+          }
+        }
+      }
+      console.log(newSourceProjectobject.states, "FPCCCCCCCCCCCCC");
+      dispatch(updateProject(newSourceProjectobject));
+      // setRedux(finalProjectCopy);
+      setProjectState(newSourceProjectobject);
+      // console.table(newSourceProjectobject, "Final Source Project Version");
+    },
+    [project]
+  );
   return (
     <div style={{ textAlign: "center" }}>
-      Project : {projectDetails.name} by User <b>{projectDetails.userId}</b>
+      Project : {project.name} by User <b>{project.userId}</b>
       <TaskForm
-        states={projectDetails.states}
+        states={project.states}
         userId={userid}
         users={allUsers}
         addTask={addTask}
@@ -135,7 +136,7 @@ const Project = () => {
       <div>
         <DragDropContext onDragEnd={onDragEnd}>
           <div style={{ display: "flex", justifyContent: "space-around" }}>
-            {projectDetails.states.map((state, index) => {
+            {project.states.map((state, index) => {
               return (
                 <div key={index} style={{ border: "1px solid grey" }}>
                   <div key={state.id}>{state.name}</div>
